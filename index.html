@@ -2598,6 +2598,16 @@ footer .credit b{color:var(--gold)}
 /* ===== Service Worker للعمل أوفلاين ===== */
 if('serviceWorker' in navigator && /^https?:/.test(location.protocol)){
   window.addEventListener('load',function(){
+    /* أول ما الـ service worker ياخد السيطرة، نحدّث الصفحة مرة واحدة عشان الجديد يظهر فوراً */
+    navigator.serviceWorker.addEventListener('controllerchange',function(){
+      if(!navigator.serviceWorker.controller)return;
+      try{
+        if(!sessionStorage.getItem('marina-sw-refreshed')){
+          sessionStorage.setItem('marina-sw-refreshed','1');
+          location.reload();
+        }
+      }catch(e){}
+    });
     /* نمسح أي نسخة قديمة مخزنة على التلفون قبل ما نعرض الجديدة */
     if(window.caches){
       caches.keys().then(function(keys){
