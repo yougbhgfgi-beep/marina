@@ -1909,6 +1909,14 @@ footer .credit b{color:var(--gold)}
 <script>
 /* ===== القفل + الظرف ===== */
 (function(){
+  /* الموقع يبدأ من أوله دايماً بعد الدخول */
+  if('scrollRestoration' in history)history.scrollRestoration='manual';
+  function goTop(){
+    try{ window.scrollTo({top:0,left:0,behavior:'auto'}); }
+    catch(e){ window.scrollTo(0,0); }
+    document.documentElement.scrollTop=0; document.body.scrollTop=0;
+  }
+  goTop();
   var ls=document.getElementById('lockScreen'), input=document.getElementById('lockInput'),
       btn=document.getElementById('lockBtn'), err=document.getElementById('lockErr'),
       card=document.getElementById('lockCard'), PASS='marina';
@@ -1974,7 +1982,11 @@ footer .credit b{color:var(--gold)}
     if(window.playLoveSong)window.playLoveSong();
     if(window.startBirthdayNotifications)window.startBirthdayNotifications();
     envScreen.style.opacity='0'; envScreen.style.transition='opacity .5s ease';
-    setTimeout(function(){ envScreen.style.display='none'; document.body.style.overflow=''; },520);
+    goTop();
+    setTimeout(function(){
+      envScreen.style.display='none'; document.body.style.overflow=''; goTop();
+      requestAnimationFrame(goTop);
+    },520);
   });
   backBtn.addEventListener('click',function(){
     next.classList.remove('show'); letter.classList.remove('show');
