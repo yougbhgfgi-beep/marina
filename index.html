@@ -369,6 +369,17 @@ footer .credit b{color:var(--gold)}
   outline:none;background:rgba(43,11,27,.65);transition:box-shadow .2s,border-color .2s;margin-top:4px}
 #lockCard input::placeholder{color:rgba(246,200,95,.7);letter-spacing:7px;font-size:22px}
 #lockCard input:focus{border-color:var(--coral);box-shadow:0 0 0 4px rgba(255,95,158,.2)}
+.lock-date{display:flex;align-items:flex-end;justify-content:center;gap:6px;margin-top:12px}
+.lock-field{display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
+.lock-field.wide{flex:1.35}
+.lock-field-label{font-family:"Caveat",cursive;font-size:19px;color:var(--gold-lite)}
+.lock-field select{width:100%;height:50px;border:2px solid rgba(255,95,158,.55);border-radius:15px;
+  padding:0 6px;background:rgba(43,11,27,.8);color:var(--ink);text-align:center;cursor:pointer;
+  font-family:"Baloo Bhaijaan 2";font-size:17px;outline:none;
+  appearance:none;-webkit-appearance:none;transition:box-shadow .2s,border-color .2s}
+.lock-field select:focus{border-color:var(--coral);box-shadow:0 0 0 4px rgba(255,95,158,.2)}
+.lock-field select option{background:#2B0B1B;color:#fff}
+.lock-slash{font-family:"Caveat",cursive;font-size:25px;color:var(--gold-lite);padding-bottom:11px}
 .lock-hint-sm{font-family:"Caveat",cursive;font-size:16px;color:var(--rose-soft);margin-top:6px}
 #lockBtn{width:100%;height:52px;border:0;border-radius:27px;background:linear-gradient(135deg,var(--coral),var(--deep));
   color:#fff;font-family:"Baloo Bhaijaan 2";font-size:19px;font-weight:700;cursor:pointer;margin-top:14px;
@@ -957,7 +968,17 @@ footer .credit b{color:var(--gold)}
     <div class="lock-rose">🎂</div>
     <div class="lock-title">عيد ميلاد مارينا</div>
     <div class="lock-sep"><i></i>🎁<i></i></div>
-    <input type="password" id="lockInput" placeholder="********" autocomplete="off" enterkeyhint="go">
+    <div class="lock-sub">تاريخ عيدك 🎂</div>
+    <div class="lock-date">
+      <label class="lock-field"><span class="lock-field-label">يوم</span>
+        <select id="lockDay" aria-label="يوم الميلاد"></select></label>
+      <span class="lock-slash">/</span>
+      <label class="lock-field"><span class="lock-field-label">شهر</span>
+        <select id="lockMonth" aria-label="شهر الميلاد"></select></label>
+      <span class="lock-slash">/</span>
+      <label class="lock-field wide"><span class="lock-field-label">سنة</span>
+        <select id="lockYear" aria-label="سنة الميلاد"></select></label>
+    </div>
     <div class="lock-hint-sm">✦ هدية من بنيامين لمارينا ✦</div>
     <button id="lockBtn" type="button">افتحي مفاجأة عيدك 🎁</button>
     <div id="lockErr"></div>
@@ -1917,9 +1938,20 @@ footer .credit b{color:var(--gold)}
     document.documentElement.scrollTop=0; document.body.scrollTop=0;
   }
   goTop();
-  var ls=document.getElementById('lockScreen'), input=document.getElementById('lockInput'),
+  var ls=document.getElementById('lockScreen'),
+      day=document.getElementById('lockDay'), month=document.getElementById('lockMonth'),
+      year=document.getElementById('lockYear'),
       btn=document.getElementById('lockBtn'), err=document.getElementById('lockErr'),
       card=document.getElementById('lockCard');
+  function fillSelect(sel,from,to,label){
+    var o=document.createElement('option'); o.value=''; o.textContent=label; sel.appendChild(o);
+    for(var n=from;n<=to;n++){
+      o=document.createElement('option'); o.value=String(n); o.textContent=String(n); sel.appendChild(o);
+    }
+  }
+  fillSelect(day,1,31,'يوم'); fillSelect(month,1,12,'شهر'); fillSelect(year,1995,2010,'سنة');
+  function typedDate(){ return day.value+'/'+month.value+'/'+year.value; }
+  function allPicked(){ return !!(day.value&&month.value&&year.value); }
   /* كلمة السر هي تاريخ عيد ميلاد مارينا، بعدة صيغ مقبولة */
   var PASSES=['28/11/2005','28112005','28-11-2005','28.11.2005','2005-11-28','281105'];
   function isPass(v){
@@ -1959,19 +1991,22 @@ footer .credit b{color:var(--gold)}
   }
   function fail(){ card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
     err.textContent='غلط.. حاولي تاني 🎂💔';
-    err.classList.add('show'); input.value=''; input.focus(); }
+    err.classList.add('show'); day.value=''; month.value=''; year.value=''; day.focus(); }
   function tryOpen(){
-    if(isPass(input.value)){
+    if(allPicked()&&isPass(typedDate())){
       if(window.playLoveSong)window.playLoveSong();
       unlock();
     } else { fail(); }
   }
   btn.addEventListener('click',tryOpen);
-  input.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); tryOpen(); } });
-  input.addEventListener('input',function(){
-    if(isPass(input.value)){
-      if(window.playLoveSong)window.playLoveSong();
-    }
+  [day,month,year].forEach(function(sel){
+    sel.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); tryOpen(); } });
+    sel.addEventListener('change',function(){
+      err.classList.remove('show');
+      if(sel===day&&day.value&&!month.value)month.focus();
+      else if(sel===month&&month.value&&!year.value)year.focus();
+      if(allPicked()&&isPass(typedDate())&&window.playLoveSong)window.playLoveSong();
+    });
   });
   document.body.style.overflow='hidden';
 
