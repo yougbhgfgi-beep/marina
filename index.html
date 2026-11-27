@@ -297,14 +297,16 @@ footer .credit b{color:var(--gold)}
 .card-preview[hidden]{display:none}
 .card-preview.show{opacity:1;pointer-events:auto}
 .cp-flip{width:min(300px,74vw);aspect-ratio:9/16;perspective:1400px;cursor:pointer}
-.cp-in{position:relative;width:100%;height:100%;transform-style:preserve-3d;
-  transition:transform .7s cubic-bezier(.4,.1,.2,1)}
-.cp-flip.turn .cp-in{transform:rotateY(180deg)}
-.cp-side{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  border-radius:18px;overflow:hidden;border:1px solid rgba(255,241,246,.2);
-  box-shadow:0 26px 70px rgba(0,0,0,.6)}
-.cp-side img{width:100%;height:100%;object-fit:cover;display:block}
-.cp-side.back{transform:rotateY(180deg)}
+.cp-in{position:relative;width:100%;height:100%;transform-origin:center;
+  transition:transform .3s ease}
+.cp-flip.flipping .cp-in{transform:scaleX(.02)}
+.cp-side{position:absolute;inset:0;border-radius:18px;overflow:hidden;
+  border:1px solid rgba(255,241,246,.2);box-shadow:0 26px 70px rgba(0,0,0,.6)}
+.cp-side img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .2s}
+.cp-side.front{display:block}
+.cp-side.back{display:none}
+.cp-flip.turn .cp-side.front{display:none}
+.cp-flip.turn .cp-side.back{display:block}
 .beat-wrap{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:10px;pointer-events:none}
 .beat-heart{font-size:clamp(70px,22vh,130px);line-height:1;display:inline-block;
@@ -1662,11 +1664,17 @@ footer .credit b{color:var(--gold)}
     if(original){ tagEl.textContent=capLine+' ❤'; tag2El.textContent=capSub+' 💞'; }
     else { tagEl.textContent='دوسي اقلبي لعيدك 🎂'; tag2El.textContent='كل قلبي يحتفل معاكي 💞'; }
   }
+  function setImg(el,u){
+    el.style.opacity='0';
+    el.onload=function(){ el.style.opacity='1'; };
+    el.src=u;
+    if(el.complete && el.naturalWidth)el.style.opacity='1';
+  }
   function showPreview(frontD,backD){
     releaseUrl(curFront); releaseUrl(curBack);
     frontData=frontD||''; backData=backD||frontD||'';
     curFront=blobify(frontData); curBack=blobify(backData);
-    img.src=curFront; img2.src=curBack;
+    setImg(img,curFront); setImg(img2,curBack);
     document.getElementById('cardSaveMsg').hidden=true;
     document.getElementById('cardOpenImg').href='#';
     flipEl.classList.remove('turn');
@@ -1723,7 +1731,21 @@ footer .credit b{color:var(--gold)}
     setTimeout(function(){ preview.hidden=true; releaseUrl(curFront); releaseUrl(curBack);
       curFront=curBack=null; },320);
   });
-  flipEl.addEventListener('click',function(){ flipEl.classList.toggle('turn'); });
+  flipEl.addEventListener('click',function(){
+    if(flipEl.classList.contains('flipping'))return;
+    var goingBack=!flipEl.classList.contains('turn');
+    var target=goingBack?img2:img;
+    function doFlip(){
+      flipEl.classList.add('flipping');
+      setTimeout(function(){
+        flipEl.classList.toggle('turn',goingBack);
+        flipEl.classList.remove('flipping');
+      },170);
+    }
+    if(target.complete && target.naturalWidth){ doFlip(); }
+    else { target.addEventListener('load',doFlip,{once:true});
+           target.addEventListener('error',doFlip,{once:true}); }
+  });
   dlBtn.addEventListener('click',downloadCurrent);
 
   var cvF=document.createElement('canvas'); cvF.width=W; cvF.height=H;
