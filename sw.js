@@ -1,5 +1,5 @@
 /* ذاكرة تطبيق عيد مارينا - النسخة الجديدة دايماً من الشبكة أولاً */
-var CACHE='marina-birthday-v14';
+var CACHE='marina-birthday-v15';
 var CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png','./apple-touch-icon.png','./icon-maskable-512.png'];
 
 self.addEventListener('install',function(e){

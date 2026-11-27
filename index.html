@@ -1123,8 +1123,12 @@ footer .credit b{color:var(--gold)}
         <div class="v-frame"><video controls preload="metadata" playsinline src="1/v5.mp4"></video></div>
         <div class="v-cap">فرحة العيد كلها 💌</div>
       </div>
+      <div class="v-card">
+        <div class="v-frame"><video controls preload="metadata" playsinline src="1/WhatsApp%20Video%202026-11-27%20at%204.24.45%20PM.mp4"></video></div>
+        <div class="v-cap">💗</div>
+      </div>
     </div>
-    <p class="hint">خمسة مقاطع من قلبي لكي.. شغّلي أي واحد واستمتعي 💗</p>
+    <p class="hint">ستة مقاطع من قلبي لكي.. شغّلي أي واحد واستمتعي 💗</p>
   </section>
 
   <!-- لعبة الذاكرة بالصور -->
@@ -2617,7 +2621,7 @@ if('serviceWorker' in navigator && /^https?:/.test(location.protocol)){
     if(window.caches){
       caches.keys().then(function(keys){
         return Promise.all(keys.filter(function(k){
-          return k.indexOf('marina-birthday-')===0 && k!=='marina-birthday-v14';
+          return k.indexOf('marina-birthday-')===0 && k!=='marina-birthday-v15';
         }).map(function(k){ return caches.delete(k); }));
       }).catch(function(){});
     }
