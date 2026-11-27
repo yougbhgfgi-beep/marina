@@ -1519,8 +1519,10 @@ footer .credit b{color:var(--gold)}
   videos.forEach(function(v){
     v.addEventListener('play',function(){
       videos.forEach(function(o){ if(o!==v && !o.paused)o.pause(); });
-      if(songStarted && !audio.paused){
-        resumeWanted=true; duck(); setPlay(true);
+      /* حتى لو iOSوقف الأغنية قبل كدة، نتذكر نرجّعها بعد الفيديو */
+      if(songStarted){
+        resumeWanted=true; duck();
+        if(!audio.paused)setPlay(true);
       }
     });
     ['pause','ended','emptied','abort','stalled'].forEach(function(ev){
@@ -1529,9 +1531,15 @@ footer .credit b{color:var(--gold)}
   });
   document.addEventListener('fullscreenchange',function(){ if(!document.fullscreenElement)tryResume(); });
   document.addEventListener('visibilitychange',function(){ if(!document.hidden)tryResume(); });
-  /* لو المتصفح منع الاستئناف، أول لمسة من المستخدم ترجّع الأغنية */
-  ['click','touchend','keydown'].forEach(function(ev){
-    document.addEventListener(ev,function(){ if(resumePending||resumeWanted)tryResume(true); },true);
+  /* أول لمسة على أي مكان في الشاشة تكمل الأغنية فوراً حتى لو المتصفح منع الاستئناف */
+  function resumeOnTouch(){
+    if(!songStarted || anyVideoPlaying())return;
+    unduck();
+    if(audio.paused)tryResume(true);
+    else { setPlay(true); resumeWanted=false; resumePending=false; }
+  }
+  ['pointerdown','touchstart','click','keydown'].forEach(function(ev){
+    document.addEventListener(ev,resumeOnTouch,true);
   });
   /* طمأنة أخيرة: أي فيديو يتقفل أو يتوقف الأغنية ترجع حتى لو مفيش حدث وصل */
   setInterval(function(){ if(resumeWanted||resumePending)tryResume(); },600);
