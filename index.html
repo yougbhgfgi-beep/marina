@@ -337,6 +337,10 @@ footer .credit b{color:var(--gold)}
 #closeCard{background:rgba(255,241,246,.12);color:var(--ink);border:1px solid var(--line)}
 .card-preview img.sel{margin-top:-6px}
 #cardCanvas,#cardCanvas2{position:fixed;left:-9999px;top:0;width:1080px;height:1920px;pointer-events:none}
+.card-save-msg{margin-top:10px;display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;
+  font-family:"Caveat",cursive;font-size:18px;color:var(--ink-soft)}
+.card-save-msg[hidden]{display:none}
+.card-save-msg a{cursor:pointer;color:var(--gold-lite);text-decoration:underline;font-weight:700}
 
 /* ============ قفل رومانسي جداً ============ */
 #lockScreen{position:fixed;inset:0;z-index:300;overflow:hidden;
@@ -1216,6 +1220,10 @@ footer .credit b{color:var(--gold)}
     <button id="downloadCard" type="button">احفظي الذكرى 📥</button>
     <button id="closeCard" type="button">✕</button>
   </div>
+  <div class="card-save-msg" id="cardSaveMsg" hidden>
+    <span id="cardSaveText"></span>
+    <a id="cardOpenImg" href="#" target="_blank" rel="noopener">افتح الصورة ↗️</a>
+  </div>
   <div class="card-edit-row" id="cardEditRow" hidden>
     <input id="cardEditInput" type="text" maxlength="60" placeholder="اكتبي كلمه حلوه..." aria-label="اكتبي كلمه حلوه">
     <button id="cardEditSave" type="button">حفظ 💗</button>
@@ -1623,7 +1631,7 @@ footer .credit b{color:var(--gold)}
       tagEl=document.getElementById('cardTag'), tag2El=document.getElementById('cardTag2'),
       editRow=document.getElementById('cardEditRow'), editInput=document.getElementById('cardEditInput'),
       editSave=document.getElementById('cardEditSave');
-  var curFront=null, curBack=null, photoIdx=-1,
+  var curFront=null, curBack=null, frontData='', backData='', photoIdx=-1,
       capLine='عيد ميلاد سعيد يا مارينا 🎂', capSub='بنيامين بيحتفل بعيدك يا مارينا 🎉';
   function releaseUrl(u){ if(u&&u.indexOf('blob:')===0){ try{ URL.revokeObjectURL(u); }catch(e){} } }
   function blobify(d){ try{ var u=URL.createObjectURL(dataUrlToBlob(d)); return u; }
@@ -1637,23 +1645,59 @@ footer .credit b{color:var(--gold)}
   }
   function showPreview(frontD,backD){
     releaseUrl(curFront); releaseUrl(curBack);
-    curFront=blobify(frontD||''); curBack=blobify(backD||frontD||'');
+    frontData=frontD||''; backData=backD||frontD||'';
+    curFront=blobify(frontData); curBack=blobify(backData);
     img.src=curFront; img2.src=curBack;
+    document.getElementById('cardSaveMsg').hidden=true;
+    document.getElementById('cardOpenImg').href='#';
     flipEl.classList.remove('turn');
     preview.hidden=false;
     requestAnimationFrame(function(){ requestAnimationFrame(function(){ preview.classList.add('show'); }); });
   }
-  function downloadCurrent(retry){
-    var u=flipEl.classList.contains('turn')?curBack:curFront;
-    if(!u){
-      if(!retry){ document.getElementById('makeCard').click(); setTimeout(function(){ downloadCurrent(true); },900); }
+  function note(t){
+    var m=document.getElementById('cardSaveMsg');
+    m.hidden=false; document.getElementById('cardSaveText').textContent=t;
+  }
+  function pickData(){ return flipEl.classList.contains('turn')?backData:frontData; }
+  function doSave(){
+    var d=pickData();
+    if(!d){ note('بنجهّز الصورة.. جرّبي تاني بعد ثانية 💗'); return; }
+    var link=document.getElementById('cardOpenImg'); link.href=d;
+    var blob=null; try{ blob=dataUrlToBlob(d); }catch(e){}
+    var mobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    var ios=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+    if(mobile && navigator.share && blob && typeof File!=='undefined'){
+      var file=new File([blob],'marina-birthday.png',{type:'image/png'});
+      navigator.share({files:[file],title:'عيد ميلاد مارينا 🎂'}).then(function(){
+        note('اتشاركت 🎉 ولو حفظتيها منShare هتلاقيها في الصور');
+      }).catch(function(){ fallback(); });
       return;
     }
-    try{
-      var a=document.createElement('a'); a.href=u; a.download='بطاقة-عيد-مارينا.png';
-      a.style.display='none'; document.body.appendChild(a); a.click();
-      setTimeout(function(){ if(a.parentNode)a.parentNode.removeChild(a); },1200);
-    }catch(e){ window.open(u,'_blank'); }
+    fallback();
+    function fallback(){
+      if(ios){ window.open(d,'_blank'); note('الصورة فتحت.. اعمل ضغط طويل واحفظيها 💗'); return; }
+      try{
+        var u=URL.createObjectURL(blob||dataUrlToBlob(d));
+        var a=document.createElement('a'); a.href=u; a.download='marina-birthday.png';
+        a.style.display='none'; document.body.appendChild(a); a.click();
+        setTimeout(function(){
+          if(a.parentNode)a.parentNode.removeChild(a);
+          setTimeout(function(){ try{ URL.revokeObjectURL(u); }catch(e){} },30000);
+        },1200);
+        note('اتحفظت 🎉 ولو ما لقيتيهاش افتحيها من هنا ↗️');
+      }catch(e){
+        window.open(d,'_blank'); note('الصورة فتحت.. احفظيها من المتصفح 💗');
+      }
+    }
+  }
+  function downloadCurrent(){
+    if(pickData()){ doSave(); return; }
+    note('بنجهّز الصورة لكي.. لحظة 🎂');
+    document.getElementById('makeCard').click();
+    var tries=0, iv=setInterval(function(){
+      if(pickData()){ clearInterval(iv); doSave(); }
+      else if(++tries>40){ clearInterval(iv); note('حصلت مشكلة بسيطة.. جرّبي تاني 💗'); }
+    },250);
   }
   closeBtn.addEventListener('click',function(){
     preview.classList.remove('show');
