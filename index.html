@@ -1919,7 +1919,13 @@ footer .credit b{color:var(--gold)}
   goTop();
   var ls=document.getElementById('lockScreen'), input=document.getElementById('lockInput'),
       btn=document.getElementById('lockBtn'), err=document.getElementById('lockErr'),
-      card=document.getElementById('lockCard'), PASS='marina';
+      card=document.getElementById('lockCard');
+  /* كلمة السر هي تاريخ عيد ميلاد مارينا، بعدة صيغ مقبولة */
+  var PASSES=['28/11/2005','28112005','28-11-2005','28.11.2005','2005-11-28','281105'];
+  function isPass(v){
+    var s=(v||'').trim().toLowerCase().replace(/\s+/g,'');
+    return PASSES.indexOf(s)>=0;
+  }
 
   /* قلوب متحركة */
   (function(){
@@ -1955,8 +1961,7 @@ footer .credit b{color:var(--gold)}
     err.textContent='غلط.. حاولي تاني 🎂💔';
     err.classList.add('show'); input.value=''; input.focus(); }
   function tryOpen(){
-    var v=(input.value||'').trim().toLowerCase();
-    if(v===PASS){
+    if(isPass(input.value)){
       if(window.playLoveSong)window.playLoveSong();
       unlock();
     } else { fail(); }
@@ -1964,7 +1969,7 @@ footer .credit b{color:var(--gold)}
   btn.addEventListener('click',tryOpen);
   input.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); tryOpen(); } });
   input.addEventListener('input',function(){
-    if((input.value||'').trim().toLowerCase()===PASS){
+    if(isPass(input.value)){
       if(window.playLoveSong)window.playLoveSong();
     }
   });
