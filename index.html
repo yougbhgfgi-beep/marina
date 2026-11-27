@@ -1404,7 +1404,8 @@ footer .credit b{color:var(--gold)}
 
   /* ===== الأغنية ===== */
   var audio=$('song'), playing=false, idx=0, songStarted=false;
-  var videos=[].slice.call(document.querySelectorAll('.video-grid video')), resumeWanted=false, resumePending=false;
+  var videos=[].slice.call(document.querySelectorAll('.video-grid video')),
+      resumeWanted=false, resumePending=false, savedVolume=1, ducked=false;
   var discEls=[$('disc')], playBtns=[$('play')], nameEls=[$('tname')], numEls=[$('tnum')],
       fillEls=[$('fill')], barEls=[$('bar')], curEls=[$('tcur')], ttotEls=[$('ttot')];
   function fmt(s){ if(!isFinite(s))return '0:00';
@@ -1425,6 +1426,20 @@ footer .credit b{color:var(--gold)}
     ttotEls.forEach(function(e){ e.textContent='0:00'; });
     if(auto){ playAudio(); } else setPlay(false);
   }
+  /* على الموبايل المتصفح بيمنع play() بعد الفيديو، فبدل ما نوقف الأغنية بنكتمها ونرجع الصوت */
+  function duck(){
+    if(ducked)return;
+    savedVolume=(typeof audio.volume==='number'&&audio.volume>0)?audio.volume:1;
+    ducked=true;
+    try{ audio.muted=true; }catch(e){}
+    try{ audio.volume=0; }catch(e){}
+  }
+  function unduck(){
+    if(!ducked)return;
+    ducked=false;
+    try{ audio.muted=false; }catch(e){}
+    try{ audio.volume=savedVolume>0?savedVolume:1; }catch(e){}
+  }
   function playAudio(){
     if(!SURLS.length)return;
     if(!audio.src){ loadSong(0,false); }
@@ -1434,13 +1449,13 @@ footer .credit b{color:var(--gold)}
   if(playBtns.length && SURLS.length){
     loadSong(0,false);
     playBtns.forEach(function(b){ b.addEventListener('click',function(){
-      resumeWanted=false; resumePending=false;
+      resumeWanted=false; resumePending=false; unduck();
       if(audio.paused){ songStarted=true; playAudio(); }
       else { audio.pause(); setPlay(false); } }); });
     [].forEach.call(document.querySelectorAll('#next'),function(b){ b.addEventListener('click',function(){
-      resumeWanted=false; resumePending=false; loadSong(idx+1,!audio.paused); }); });
+      resumeWanted=false; resumePending=false; unduck(); loadSong(idx+1,!audio.paused); }); });
     [].forEach.call(document.querySelectorAll('#prev'),function(b){ b.addEventListener('click',function(){
-      resumeWanted=false; resumePending=false; loadSong(idx-1,!audio.paused); }); });
+      resumeWanted=false; resumePending=false; unduck(); loadSong(idx-1,!audio.paused); }); });
     barEls.forEach(function(bEl){ bEl.addEventListener('click',function(e){
       if(!audio.duration)return; var r=bEl.getBoundingClientRect();
       audio.currentTime=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*audio.duration; }); });
@@ -1453,7 +1468,7 @@ footer .credit b{color:var(--gold)}
     /* تبقى شغالة من غير ما ترجع من الأول كل ما ندخل */
     window.playLoveSong=function(){
       if(!SURLS.length)return;
-      if(songStarted){ if(audio.paused && !anyVideoPlaying())tryResume(true); return; }
+      if(songStarted){ if((audio.paused||ducked)&&!anyVideoPlaying())tryResume(true); return; }
       songStarted=true;
       loadSong(0,false); playAudio();
     };
@@ -1465,6 +1480,10 @@ footer .credit b{color:var(--gold)}
   function tryResume(force){
     if(!resumeWanted && !resumePending && !force)return;
     if(!songStarted || anyVideoPlaying())return;
+    if(ducked){
+      unduck();
+      if(!audio.paused){ setPlay(true); resumeWanted=false; resumePending=false; return; }
+    }
     if(!audio.paused){ resumeWanted=false; resumePending=false; return; }
     var pr;
     try{ pr=audio.play(); }catch(e){ pr=Promise.reject(e); }
@@ -1477,7 +1496,7 @@ footer .credit b{color:var(--gold)}
     v.addEventListener('play',function(){
       videos.forEach(function(o){ if(o!==v && !o.paused)o.pause(); });
       if(songStarted && !audio.paused){
-        resumeWanted=true; audio.pause(); setPlay(false);
+        resumeWanted=true; duck(); setPlay(true);
       }
     });
     ['pause','ended','emptied','abort','stalled'].forEach(function(ev){
