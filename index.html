@@ -2598,7 +2598,34 @@ footer .credit b{color:var(--gold)}
 /* ===== Service Worker للعمل أوفلاين ===== */
 if('serviceWorker' in navigator && /^https?:/.test(location.protocol)){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js').catch(function(){});
+    /* نمسح أي نسخة قديمة مخزنة على التلفون قبل ما نعرض الجديدة */
+    if(window.caches){
+      caches.keys().then(function(keys){
+        return Promise.all(keys.filter(function(k){
+          return k.indexOf('marina-birthday-')===0 && k!=='marina-birthday-v14';
+        }).map(function(k){ return caches.delete(k); }));
+      }).catch(function(){});
+    }
+    navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(function(reg){
+      function check(){ if(reg && reg.update)reg.update().catch(function(){}); }
+      check();
+      window.addEventListener('pageshow',check);
+      setInterval(check,30000);
+      reg.addEventListener('updatefound',function(){
+        var w=reg.installing;
+        if(!w)return;
+        w.addEventListener('statechange',function(){
+          if(w.state==='installed' && navigator.serviceWorker.controller){
+            try{
+              if(!sessionStorage.getItem('marina-sw-refreshed')){
+                sessionStorage.setItem('marina-sw-refreshed','1');
+                setTimeout(function(){ location.reload(); },500);
+              }
+            }catch(e){}
+          }
+        });
+      });
+    }).catch(function(){});
   });
 }
 </script>
