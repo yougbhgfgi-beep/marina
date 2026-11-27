@@ -632,13 +632,81 @@ footer .credit b{color:var(--gold)}
 .wish-chip{font-family:"Caveat",cursive;font-size:16px;color:var(--ink-soft);
   border:1px solid rgba(246,200,95,.28);border-radius:999px;padding:3px 13px;background:rgba(43,11,27,.5)}
 
+
+/* ============ الخاتمة ============ */
+.finale-teaser{max-width:520px;margin:0 auto;text-align:center;padding:22px 18px;border-radius:18px;
+  background:linear-gradient(145deg,rgba(72,23,52,.9),rgba(43,11,27,.95));
+  border:1px solid rgba(246,200,95,.4);box-shadow:0 14px 34px rgba(10,2,7,.45)}
+.finale-teaser p{font-family:"Caveat",cursive;font-size:20px;color:var(--ink-soft);line-height:1.7}
+#finaleBtn{margin-top:14px;cursor:pointer;border:1px solid rgba(246,200,95,.6);border-radius:999px;
+  padding:10px 26px;background:linear-gradient(135deg,var(--coral),var(--deep));color:#fff;
+  font-family:"Baloo Bhaijaan 2";font-size:15px;font-weight:700;transition:transform .2s}
+#finaleBtn:hover{transform:translateY(-3px)}
+.finale{position:fixed;inset:0;z-index:800;overflow-y:auto;background:rgba(12,3,9,.9);
+  backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
+.finale[hidden]{display:none}
+.fin-bg{position:fixed;inset:0;background-size:cover;background-position:center;
+  filter:blur(26px) brightness(.3);transform:scale(1.1)}
+.fin-grain{position:fixed;inset:0;pointer-events:none;opacity:.12;
+  background-image:radial-gradient(rgba(255,255,255,.6) .5px,transparent .6px);background-size:3px 3px}
+.fin-box{position:relative;max-width:740px;margin:0 auto;padding:54px 18px 76px;text-align:center}
+.fin-close{position:fixed;top:14px;left:14px;z-index:5;cursor:pointer;width:40px;height:40px;border-radius:50%;
+  border:1px solid rgba(246,200,95,.5);background:rgba(43,11,27,.85);color:var(--gold-lite);font-size:18px}
+.fin-kicker{font-family:"Caveat",cursive;font-size:20px;color:var(--gold-lite);letter-spacing:2px}
+.fin-title{font-family:"Marhey",cursive;font-size:clamp(30px,7vw,52px);color:var(--ink);margin:6px 0 2px;
+  text-shadow:0 4px 24px rgba(255,46,126,.45)}
+.fin-sub{font-family:"Caveat",cursive;font-size:20px;color:var(--ink-soft);margin-bottom:20px}
+.fin-cinema{max-width:620px;margin:22px auto}
+.cinema-screen{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;
+  border:1px solid rgba(246,200,95,.5);background:#12050d;box-shadow:0 18px 44px rgba(0,0,0,.6)}
+.cinema-screen img{width:100%;height:100%;object-fit:cover;display:block;animation:finKen 5.4s ease both}
+@keyframes finKen{from{transform:scale(1.04)}to{transform:scale(1.15) translateX(-1%)}}
+.cinema-shade{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to top,rgba(12,3,9,.82),transparent 55%)}
+.cinema-bars{position:absolute;left:0;right:0;height:13px;background:rgba(0,0,0,.86);pointer-events:none}
+.cinema-bars.top{top:0}.cinema-bars.bottom{bottom:0}
+.cinema-cap{position:absolute;right:18px;left:18px;bottom:24px;font-family:"Caveat",cursive;
+  font-size:19px;color:var(--ink);text-shadow:0 2px 10px #000}
+.cinema-count{position:absolute;top:19px;left:18px;padding:2px 10px;border-radius:999px;font-size:12px;
+  color:var(--gold-lite);background:rgba(43,11,27,.8);border:1px solid rgba(246,200,95,.4)}
+.cinema-controls{display:flex;justify-content:center;gap:10px;margin-top:10px}
+.cinema-controls button{cursor:pointer;border:1px solid rgba(246,200,95,.5);border-radius:999px;
+  padding:6px 18px;background:rgba(72,23,52,.85);color:var(--gold-lite);font-family:"Baloo Bhaijaan 2";font-size:13px}
+.fin-cake{position:relative;width:230px;height:180px;margin:26px auto 8px}
+.fin-cake-body{position:absolute;bottom:0;left:15px;width:200px;height:118px}
+.fin-layer{position:absolute;border-radius:9px 9px 5px 5px;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+.fin-layer.base{bottom:0;left:0;width:200px;height:46px;background:linear-gradient(#FFE3B0,#E9A96C)}
+.fin-layer.mid{bottom:42px;left:10px;width:180px;height:42px;background:linear-gradient(#FFF0D2,#F3B77E)}
+.fin-layer.top{bottom:80px;left:24px;width:152px;height:38px;background:linear-gradient(#FFF7E8,#F7C795)}
+.fin-candles,.fin-flames{position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:16px}
+.fin-candles{bottom:116px}
+.fin-candles i{width:8px;height:32px;border-radius:3px;
+  background:repeating-linear-gradient(45deg,#FF5F9E 0 6px,#FFF1F6 6px 12px)}
+.fin-flames{bottom:146px}
+.fin-flames i{width:14px;height:22px;border-radius:50% 50% 45% 45%;
+  background:radial-gradient(circle at 50% 70%,#FFF7C2,#FF9A3C 60%,rgba(255,120,30,0));
+  transform-origin:bottom;animation:finFlicker .7s infinite alternate}
+.fin-flames i:nth-child(2){animation-delay:.2s}.fin-flames i:nth-child(3){animation-delay:.4s}
+@keyframes finFlicker{from{transform:scale(.9) rotate(-6deg)}to{transform:scale(1.12) rotate(6deg)}}
+.fin-cake.blown .fin-flames{opacity:0;transform:translateY(-12px);transition:.5s}
+#finBlow{cursor:pointer;border:1px solid rgba(246,200,95,.55);border-radius:999px;padding:8px 22px;
+  background:linear-gradient(135deg,var(--coral),var(--deep));color:#fff;font-family:"Baloo Bhaijaan 2";font-size:14px}
+#finBlow:disabled{opacity:.7;cursor:default}
+.fin-blow-hint{font-family:"Caveat",cursive;font-size:18px;color:var(--gold-lite);margin-top:8px}
+.fin-note{max-width:560px;margin:26px auto 0;padding:22px;border-radius:18px;
+  background:linear-gradient(145deg,rgba(72,23,52,.92),rgba(43,11,27,.95));
+  border:1px solid rgba(246,200,95,.45);box-shadow:0 16px 40px rgba(10,2,7,.5)}
+.fin-note-mark{font-size:26px;color:var(--gold-lite)}
+.fin-note p{font-family:"Amiri",serif;font-size:18px;line-height:2;color:var(--ink);margin:6px 0}
+.fin-sign{font-family:"Caveat",cursive;font-size:23px;color:var(--gold-lite);margin-top:8px}
+@media (max-width:560px){
+  .fin-box{padding-top:62px}
+  .fin-sub{font-size:17px}
+  .cinema-cap{font-size:16px;bottom:22px}
+  .fin-note p{font-size:16px}
+}
 .wish-tools{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;flex-wrap:wrap}
 .wish-state{font-family:"Caveat",cursive;font-size:16px;color:var(--ink-soft)}
-.install-btn{position:fixed;z-index:700;bottom:18px;left:16px;cursor:pointer;border:1px solid rgba(246,200,95,.55);
-  border-radius:999px;padding:9px 16px;background:rgba(43,11,27,.92);color:var(--gold-lite);
-  font-family:"Baloo Bhaijaan 2";font-size:13px;font-weight:700;box-shadow:0 8px 24px rgba(10,2,7,.5);
-  backdrop-filter:blur(8px);transition:transform .2s,background .2s}
-.install-btn[hidden]{display:none}
 .card-edit-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:10px}
 .card-edit-row[hidden]{display:none}
 .card-edit-row input{flex:1 1 190px;height:38px;border-radius:999px;padding:0 14px;
@@ -646,7 +714,6 @@ footer .credit b{color:var(--gold)}
   outline:none;font-family:"Baloo Bhaijaan 2";font-size:13px}
 .card-edit-row button{cursor:pointer;border:1px solid rgba(246,200,95,.5);border-radius:999px;
   padding:6px 16px;background:linear-gradient(135deg,var(--coral),var(--deep));color:#fff;font-size:13px}
-.install-btn:hover{transform:translateY(-3px);background:rgba(255,95,158,.35)}
 .wish-chip{display:inline-flex;align-items:center;gap:7px}
 .wish-chip b{font-weight:400}
 .wish-chip i{cursor:pointer;font-style:normal;font-size:11px;opacity:.6;line-height:1}
@@ -1110,6 +1177,15 @@ footer .credit b{color:var(--gold)}
     </div>
   </section>
 
+  <!-- الخاتمة -->
+  <section class="sec finale-sec">
+    <div class="sec-h"><span class="pin"></span><h2>الخاتمة 🎬</h2><i></i></div>
+    <div class="finale-teaser">
+      <p>تورتها، عرض سينمائي، وكلام من القلب.. أجمل ختام لأجمل عيد 🎂💗</p>
+      <button id="finaleBtn" type="button">افتح الخاتمة ✨</button>
+    </div>
+  </section>
+
   <footer>بنيامين <span class="hh">♥</span> مارينا 🎂
     <span class="credit">صممها <b>بنيامين</b> لعيد مارينا ✦</span>
   </footer>
@@ -1567,10 +1643,17 @@ footer .credit b{color:var(--gold)}
     preview.hidden=false;
     requestAnimationFrame(function(){ requestAnimationFrame(function(){ preview.classList.add('show'); }); });
   }
-  function downloadCurrent(){
+  function downloadCurrent(retry){
     var u=flipEl.classList.contains('turn')?curBack:curFront;
-    if(!u)return;
-    var a=document.createElement('a'); a.href=u; a.download='بطاقة-عيد-مارينا.png'; a.click();
+    if(!u){
+      if(!retry){ document.getElementById('makeCard').click(); setTimeout(function(){ downloadCurrent(true); },900); }
+      return;
+    }
+    try{
+      var a=document.createElement('a'); a.href=u; a.download='بطاقة-عيد-مارينا.png';
+      a.style.display='none'; document.body.appendChild(a); a.click();
+      setTimeout(function(){ if(a.parentNode)a.parentNode.removeChild(a); },1200);
+    }catch(e){ window.open(u,'_blank'); }
   }
   closeBtn.addEventListener('click',function(){
     preview.classList.remove('show');
@@ -2177,28 +2260,98 @@ footer .credit b{color:var(--gold)}
 
 })();
 </script>
-<button class="install-btn" id="installBtn" type="button">📲 ثبّتي التطبيق</button>
+<!-- الخاتمة -->
+<div class="finale" id="finale" hidden>
+  <div class="fin-bg" id="finBg"></div>
+  <div class="fin-grain"></div>
+  <div class="fin-box">
+    <button class="fin-close" id="finClose" type="button" aria-label="إغلاق الخاتمة">✕</button>
+    <div class="fin-kicker">الخاتمة 💫</div>
+    <h2 class="fin-title">عيدك يا مارينا 🎂</h2>
+    <p class="fin-sub">أجمل ختام لأجمل بنت.. من قلبي لكي 💗</p>
+
+    <div class="fin-cinema">
+      <div class="cinema-screen">
+        <img id="finImg" alt="لحظات مارينا في عيدها">
+        <div class="cinema-shade"></div>
+        <div class="cinema-bars top"></div><div class="cinema-bars bottom"></div>
+        <div class="cinema-cap" id="finCap"></div>
+        <span class="cinema-count" id="finCount"></span>
+      </div>
+      <div class="cinema-controls">
+        <button id="finPlay" type="button">⏸ إيقاف العرض</button>
+        <button id="finNext" type="button">التالية ›</button>
+      </div>
+    </div>
+
+    <div class="fin-cake" id="finCake">
+      <div class="fin-cake-body">
+        <div class="fin-layer top"></div><div class="fin-layer mid"></div><div class="fin-layer base"></div>
+        <div class="fin-candles"><i></i><i></i><i></i></div>
+        <div class="fin-flames"><i></i><i></i><i></i></div>
+      </div>
+      <button id="finBlow" type="button">انفخي الشموع 💨</button>
+      <p class="fin-blow-hint" id="finBlowHint">تمنياتي لكي طايرة في الهواء يا مارينا ✨</p>
+    </div>
+
+    <div class="fin-note">
+      <span class="fin-note-mark">✦</span>
+      <p>يا مارينا.. كل لحظة في اليوم ده كانت بتنادي اسمك. شكراً إنك موجودة، وكل سنة وانتي أجمل حاجه في حياتي 🎂💗</p>
+      <div class="fin-sign">— بنيامين ♥</div>
+    </div>
+  </div>
+</div>
 
 <script>
-/* ===== تثبيت الموقع كتطبيق على التلفون ===== */
+/* ===== الخاتمة: عرض سينمائي + تورته + كلام من القلب ===== */
 (function(){
-  var btn=document.getElementById('installBtn'), deferred=null;
-  if(!btn)return;
-  window.addEventListener('beforeinstallprompt',function(e){
-    e.preventDefault(); deferred=e; btn.hidden=false;
-  });
-  btn.addEventListener('click',function(){
-    if(deferred){
-      deferred.prompt();
-      deferred.userChoice.then(function(){ btn.hidden=true; deferred=null; });
-      return;
+  var btn=document.getElementById('finaleBtn'), box=document.getElementById('finale'),
+      closeBtn=document.getElementById('finClose'), bg=document.getElementById('finBg'),
+      fi=document.getElementById('finImg'), cap=document.getElementById('finCap'),
+      count=document.getElementById('finCount'), playBtn=document.getElementById('finPlay'),
+      nextBtn=document.getElementById('finNext'), blowBtn=document.getElementById('finBlow'),
+      hint=document.getElementById('finBlowHint'), cake=document.getElementById('finCake');
+  if(!btn||!box)return;
+  var photos=[], caps=[], i=0, timer=null, reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  try{ photos=JSON.parse(document.getElementById('dPhotos').textContent||'[]').filter(Boolean); }catch(e){}
+  try{ caps=JSON.parse(document.getElementById('dPhotoCaps').textContent||'[]'); }catch(e){}
+  function show(n){
+    if(!photos.length)return;
+    i=(n+photos.length)%photos.length;
+    fi.style.animation='none'; fi.src=photos[i]; void fi.offsetWidth; fi.style.animation='';
+    cap.textContent=caps[i]||'لحظة من قلبي لكي 💗';
+    count.textContent=(i+1)+' / '+photos.length;
+    bg.style.backgroundImage='url("'+photos[i]+'")';
+  }
+  function start(){ if(timer||!photos.length)return;
+    timer=setInterval(function(){ show(i+1); },3800); playBtn.textContent='⏸ إيقاف العرض'; }
+  function stop(){ if(timer){ clearInterval(timer); timer=null; } playBtn.textContent='▶ تشغيل العرض'; }
+  function burst(){
+    if(reduce)return;
+    for(var k=0;k<20;k++){
+      var e=document.createElement('span'); e.className='mini-heart';
+      e.textContent=['💗','🎂','✨','🎉'][k%4];
+      e.style.left=(window.innerWidth/2+(Math.random()-.5)*240)+'px';
+      e.style.top=(window.innerHeight/2+(Math.random()-.5)*140)+'px';
+      document.body.appendChild(e);
+      (function(el){ setTimeout(function(){ if(el.parentNode)el.parentNode.removeChild(el); },1600); })(e);
     }
-    var ios=/iPad|iPhone|iPod/.test(navigator.userAgent);
-    btn.textContent=ios?'من المشاركة ← إضافة للشاشة الرئيسية':'ازرار المتصفح ⋮ ← تثبيت التطبيق';
-    setTimeout(function(){ btn.textContent='📲 ثبّتي التطبيق'; },5500);
+  }
+  btn.addEventListener('click',function(){
+    box.hidden=false; document.body.style.overflow='hidden';
+    show(0); start();
   });
-  window.addEventListener('appinstalled',function(){ btn.hidden=true; });
-  if(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)btn.hidden=true;
+  closeBtn.addEventListener('click',function(){
+    box.hidden=true; document.body.style.overflow=''; stop();
+  });
+  playBtn.addEventListener('click',function(){ if(timer)stop(); else start(); });
+  nextBtn.addEventListener('click',function(){ show(i+1); if(timer){ stop(); start(); } });
+  blowBtn.addEventListener('click',function(){
+    if(cake.classList.contains('blown'))return;
+    cake.classList.add('blown'); blowBtn.disabled=true;
+    hint.textContent='بحبك يا مارينا.. وكل تمنياتي إنكي تفضلي فرحة 💗';
+    burst();
+  });
 })();
 
 /* ===== Service Worker للعمل أوفلاين ===== */
